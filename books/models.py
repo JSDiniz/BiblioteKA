@@ -1,8 +1,6 @@
 from django.db import models
 import uuid
 
-# Create your models here.
-
 
 class Book(models.Model):
     class Meta:
@@ -15,8 +13,25 @@ class Book(models.Model):
     category = models.CharField(max_length=20)
     pages = models.PositiveIntegerField(default=0)
     release_date = models.DateField()
+    
+    follows = models.ManyToManyField(
+        "users.User",
+        through="books.Follow",
+        related_name="book_follow",
+    )
 
 
 class Follow(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="books")
+    book = models.ForeignKey(
+        "books.Book",
+        on_delete=models.CASCADE,
+        related_name="book_followers",
+    )
+
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="user_follows"
+    )
+
     date = models.DateTimeField(auto_now_add=True)
