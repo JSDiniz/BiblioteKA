@@ -40,7 +40,9 @@ THIRD_PARTY_APPS = [
     "drf_spectacular",
 ]
 
-MY_APPS = []
+MY_APPS = [
+    "books",
+]
 
 DJANGO_APPS = [
     "django.contrib.admin",
@@ -155,4 +157,4 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-AUTH_USER_MODEL = "users.User"
+# AUTH_USER_MODEL = "users.User"
