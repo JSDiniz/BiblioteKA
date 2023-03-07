@@ -40,7 +40,9 @@ THIRD_PARTY_APPS = [
     "drf_spectacular",
 ]
 
-MY_APPS = []
+MY_APPS = [
+    "copies",
+]
 
 DJANGO_APPS = [
     "django.contrib.admin",
