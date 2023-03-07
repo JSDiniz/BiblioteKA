@@ -1,12 +1,12 @@
 from copies.models import Copy, Loan
 from rest_framework import serializers
-# from users.serializers import UserSerializer
-# from books.serializers import BookSerializer
+from users.serializers import UserSerializer
+from books.serializers import BookSerializer
 
 
 class CopySerializer(serializers.ModelSerializer):
-    # book = BookSerializer()
-    # borrowers = UserSerializer(many=True)
+    book = BookSerializer()
+    borrowers = UserSerializer(many=True)
 
     class Meta:
         model = Copy
