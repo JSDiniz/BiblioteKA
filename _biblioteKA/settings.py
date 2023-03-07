@@ -42,6 +42,8 @@ THIRD_PARTY_APPS = [
 
 MY_APPS = [
     "copies",
+    "users",
+    "books",
 ]
 
 DJANGO_APPS = [
@@ -92,9 +94,9 @@ WSGI_APPLICATION = "_biblioteKA.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "POSTGRES_DB": os.getenv("POSTGRES_DB"),
-        "POSTGRES_USERNAME": os.getenv("POSTGRES_USERNAME"),
-        "POSTGRES_PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+        "NAME": os.getenv("POSTGRES_DB"),
+        "USER": os.getenv("POSTGRES_USERNAME"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
         "HOST": os.getenv("HOST"),
         "PORT": os.getenv("PORT"),
     }
@@ -157,4 +159,4 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-AUTH_USER_MODEL = "users.User"
+# AUTH_USER_MODEL = "users.User"
