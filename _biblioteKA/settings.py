@@ -40,7 +40,9 @@ THIRD_PARTY_APPS = [
     "drf_spectacular",
 ]
 
-MY_APPS = []
+MY_APPS = [
+    "users",
+]
 
 DJANGO_APPS = [
     "django.contrib.admin",
@@ -90,9 +92,9 @@ WSGI_APPLICATION = "_biblioteKA.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "POSTGRES_DB": os.getenv("POSTGRES_DB"),
-        "POSTGRES_USERNAME": os.getenv("POSTGRES_USERNAME"),
-        "POSTGRES_PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+        "NAME": os.getenv("POSTGRES_DB"),
+        "USER": os.getenv("POSTGRES_USERNAME"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
         "HOST": os.getenv("HOST"),
         "PORT": os.getenv("PORT"),
     }
