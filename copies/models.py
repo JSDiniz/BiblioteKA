@@ -1,5 +1,6 @@
-from django.db import models
 import uuid
+
+from django.db import models
 
 
 class Copy(models.Model):
@@ -22,7 +23,10 @@ class Loan(models.Model):
     expires_at = models.DateField()
 
     book_copy = models.ForeignKey(
-        "copies.Copy", on_delete=models.SET_NULL, related_name="copy_loans"
+        "copies.Copy",
+        on_delete=models.SET_NULL,
+        related_name="copy_loans",
+        null=True,
     )
 
     borrower = models.ForeignKey(

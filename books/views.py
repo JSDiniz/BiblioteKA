@@ -1,11 +1,10 @@
-from .models import Book
 from rest_framework import generics
-from .serializers import BookSerializer
+from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
 from users.permission import IsAdminOrOwner
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-# Create your views here.
+from .models import Book
+from .serializers import BookSerializer
 
 
 class BookView(generics.ListCreateAPIView):
