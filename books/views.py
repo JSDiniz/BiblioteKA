@@ -8,15 +8,15 @@ from .serializers import BookSerializer
 
 
 class BookView(generics.ListCreateAPIView):
-    
-    authentication_classes = [JWTAuthentication]
-    serializer_class = [IsAuthenticatedOrReadOnly]
+    ...
+    # authentication_classes = [JWTAuthentication]
+    # serializer_class = [IsAuthenticatedOrReadOnly]
 
     queryset = Book.objects.all()
     serializer_class = BookSerializer
 
-    def perform_create(self, serializer):
-        return serializer.save(user_id=self.request.user.id)
+    # def perform_create(self, serializer):
+    #     return serializer.save(user_id=self.request.user.id)
 
 
 class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
