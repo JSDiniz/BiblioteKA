@@ -4,7 +4,7 @@ import uuid
 
 class Book(models.Model):
     class Meta:
-        ordering = ["name"]
+        ordering = ("name",)
 
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     name = models.CharField(max_length=80)
@@ -13,7 +13,7 @@ class Book(models.Model):
     category = models.CharField(max_length=20)
     pages = models.PositiveIntegerField(default=0)
     release_date = models.DateField()
-    
+
     follows = models.ManyToManyField(
         "users.User",
         through="books.Follow",
@@ -30,7 +30,7 @@ class Follow(models.Model):
 
     user = models.ForeignKey(
         "users.User",
-        on_delete=models.CASCADE,
+        on_delete=models.CASCADE, 
         related_name="user_follows"
     )
 
