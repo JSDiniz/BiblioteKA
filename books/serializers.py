@@ -14,4 +14,4 @@ class BookSerializer(serializers.ModelSerializer):
             "pages",
             "release_date",
         ]
-        read_only_fields = ["id", "release_date"]
+        read_only_fields = ["id"]

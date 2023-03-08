@@ -1,5 +1,6 @@
-from django.db import models
 import uuid
+
+from django.db import models
 
 
 class Copy(models.Model):
@@ -7,15 +8,11 @@ class Copy(models.Model):
     is_avaliable = models.BooleanField(default=True)
 
     book = models.ForeignKey(
-        "books.Book",
-        on_delete=models.CASCADE,
-        related_name="copies"
+        "books.Book", on_delete=models.CASCADE, related_name="copies"
     )
 
     borrowers = models.ManyToManyField(
-        "users.User",
-        through="copies.Loan",
-        related_name="books_copies"
+        "users.User", through="copies.Loan", related_name="books_copies"
     )
 
 
@@ -28,11 +25,10 @@ class Loan(models.Model):
     book_copy = models.ForeignKey(
         "copies.Copy",
         on_delete=models.SET_NULL,
-        related_name="copy_loans"
+        related_name="copy_loans",
+        null=True,
     )
 
     borrower = models.ForeignKey(
-        "users.User",
-        on_delete=models.CASCADE,
-        related_name="user_loans"
+        "users.User", on_delete=models.CASCADE, related_name="user_loans"
     )
