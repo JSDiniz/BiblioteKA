@@ -7,6 +7,10 @@ from .serializers import UserSerializer
 
 
 class UserView(generics.ListCreateAPIView):
+
+    authentication_classes = [JWTAuthentication]
+    serializer_class = [IsAuthenticated, IsAdminOrOwner]
+    
     queryset = User.objects.all()
     serializer_class = UserSerializer
 

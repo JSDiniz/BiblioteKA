@@ -31,7 +31,8 @@ class Follow(models.Model):
     user = models.ForeignKey(
         "users.User",
         on_delete=models.CASCADE, 
-        related_name="user_follows"
+        related_name="user_follows",
+        default= None
     )
 
     date = models.DateTimeField(auto_now_add=True)
