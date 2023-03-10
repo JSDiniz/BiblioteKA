@@ -17,3 +17,4 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    lookup_url_kwarg = "user_id"

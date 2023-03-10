@@ -10,35 +10,26 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ("copies", "0001_initial"),
-        ("books", "0002_initial"),
+        ("books", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="loan",
-            name="borrower",
+            model_name="follow",
+            name="user",
             field=models.ForeignKey(
+                default=None,
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="user_loans",
+                related_name="user_follows",
                 to=settings.AUTH_USER_MODEL,
             ),
         ),
         migrations.AddField(
-            model_name="copy",
-            name="book",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE,
-                related_name="copies",
-                to="books.book",
-            ),
-        ),
-        migrations.AddField(
-            model_name="copy",
-            name="borrowers",
+            model_name="book",
+            name="follows",
             field=models.ManyToManyField(
-                related_name="books_copies",
-                through="copies.Loan",
+                related_name="book_follow",
+                through="books.Follow",
                 to=settings.AUTH_USER_MODEL,
             ),
         ),

@@ -20,7 +20,6 @@ class Loan(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     lend_at = models.DateField()
     refund_at = models.DateField(null=True)
-    expires_at = models.DateField()
 
     book_copy = models.ForeignKey(
         "copies.Copy",
@@ -30,5 +29,7 @@ class Loan(models.Model):
     )
 
     borrower = models.ForeignKey(
-        "users.User", on_delete=models.CASCADE, related_name="user_loans"
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="user_loans",
     )

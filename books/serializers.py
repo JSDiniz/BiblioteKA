@@ -1,9 +1,11 @@
-from books.models import Book
 from rest_framework import serializers
+
+from books.models import Book
 
 
 class BookSerializer(serializers.ModelSerializer):
-    copies = serializers.IntegerField(source="copies.count")
+    copies = serializers.IntegerField(source="copies.count", read_only=True)
+
     class Meta:
         model = Book
         fields = [
@@ -14,9 +16,9 @@ class BookSerializer(serializers.ModelSerializer):
             "category",
             "pages",
             "release_date",
-            "copies"
+            "copies",
         ]
-        read_only_fields = ["id","copies"]
+        read_only_fields = ["id", "copies"]
 
         def create(self, validated_data):
             return Book.objects.create(**validated_data)
