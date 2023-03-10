@@ -121,15 +121,21 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [    'django.contrib.auth.backends.ModelBackend',]
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(hours=2),
+    'AUTHENTICATION_BACKENDS': ('path.to.EmailJWTAuthentication',),
 }
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    'AUTHENTICATION_BACKENDS': (
+        'path.to.EmailJWTAuthentication',
+    ),
 }
 SPECTACULAR_SETTINGS = {
     "TITLE": "bandkamp",
