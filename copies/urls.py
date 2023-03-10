@@ -1,7 +1,9 @@
 from django.urls import path
-from . import views
 
+from . import views
 
 urlpatterns = [
     path("books/<str:pk>/copy/", views.CopyView.as_view()),
+    path("copy/", views.ListCopiesView.as_view()),
+    path("users/<str:user_id>/copy/<str:copy_id>/loan/", views.LoanView.as_view()),
 ]
