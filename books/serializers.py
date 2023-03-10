@@ -14,8 +14,9 @@ class BookSerializer(serializers.ModelSerializer):
             "category",
             "pages",
             "release_date",
+            "copies"
         ]
-        read_only_fields = ["id"]
+        read_only_fields = ["id","copies"]
 
         def create(self, validated_data):
             return Book.objects.create(**validated_data)
