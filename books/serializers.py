@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from books.models import Book, Follow
+from emailsSend.send import sendEmailFollowBook
 
 
 class BookSerializer(serializers.ModelSerializer):
@@ -40,7 +41,7 @@ class FollowSerializer(serializers.ModelSerializer):
             "book",
             "user"
         ]
-        read_only_fields = ["date", "book", "user"]
+        read_only_fields = ["id", "date", "book", "user"]
 
     def create(self, validated_data):
         book = validated_data["book"]
@@ -49,6 +50,6 @@ class FollowSerializer(serializers.ModelSerializer):
         following = Follow.objects.filter(book_id=book.id).filter(user_id=user.id).first()
         
         if following:      
-            ...
-                    
+            raise ValueError({"error": "Está copia não esta disponivel"})
+        sendEmailFollowBook(user, book)    
         return Follow.objects.create(**validated_data)
