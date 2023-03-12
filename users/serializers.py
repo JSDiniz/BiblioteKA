@@ -43,4 +43,12 @@ class UserSerializer(serializers.ModelSerializer):
                     )
                 ]
             },
+            "username": {
+                "validators": [
+                    UniqueValidator(
+                        queryset=User.objects.all(),
+                        message="A user with that username already exists.",
+                    )
+                ]
+            },
         }
