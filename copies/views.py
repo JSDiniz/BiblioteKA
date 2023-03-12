@@ -10,7 +10,7 @@ from books.serializers import BookSerializer
 from users.models import User
 from users.permission import IsAdminOrOwner
 
-from .models import Copy
+from .models import Copy, Loan
 from .serializers import CopySerializer, LoanSerializer
 
 
@@ -49,7 +49,12 @@ class LoanView(generics.CreateAPIView):
         copy = get_object_or_404(Copy, id=copy_id)
         user = get_object_or_404(User, id=user_id)
 
-        if not copy.is_avaliable:
+        if user.is_blocked == True:
+            return Response(
+                {"message": "This user is blocked"}, status.HTTP_404_NOT_FOUND
+            )
+
+        if not copy.is_available:
             return Response(
                 {"message": "This book is not available"}, status.HTTP_404_NOT_FOUND
             )
@@ -59,6 +64,14 @@ class LoanView(generics.CreateAPIView):
 
         serializer.save(book_copy=copy, borrower=user)
 
-        copy.is_avaliable = False
+        copy.is_available = False
         copy.save()
         return Response(serializer.data, status.HTTP_201_CREATED)
+
+
+class LoanDetailView(generics.RetrieveUpdateAPIView):
+    queryset = Loan
+    serializer_class = LoanSerializer
+    lookup_url_kwarg = "user_id"
+
+
