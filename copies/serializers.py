@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import timedelta
 
 from rest_framework import serializers
 
@@ -13,23 +13,25 @@ class CopySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Copy
-        fields = ["id", "is_avaliable", "book", "borrowers"]
+        fields = ["id", "is_available", "book", "borrowers"]
         read_only_fields = ["id", "book", "borrowers"]
-
-
-"""
-1 encontrar o livro 
-2 encontrar o user 
-"""
 
 
 class LoanSerializer(serializers.ModelSerializer):
     expires_at = serializers.SerializerMethodField()
+    user_blocked = serializers.SerializerMethodField()
+    borrower = serializers.SerializerMethodField()
 
-    # borrower = serializers.CharField(source="users.username")
+    def get_borrower(self, obj: Loan):
+        return obj.borrower.email
+
     def get_expires_at(self, obj: Loan):
         expiration = obj.lend_at + timedelta(days=7)
         return expiration
+
+    def get_user_blocked(self, obj: Loan):
+        if obj.refund_at > self.expires_at:
+            return obj.borrower.is_blocked == True
 
     class Meta:
         model = Loan
@@ -41,7 +43,20 @@ class LoanSerializer(serializers.ModelSerializer):
             "book_copy",
             "borrower",
         ]
-        read_only_fields = ["id", "book_copy", "borrower"]
+        read_only_fields = [
+            "id",
+            "lend_at",
+            "book_copy",
+            "borrower",
+        ]
 
         def create(self, validated_data: dict) -> Loan:
             return Loan.objects.create(**validated_data)
+
+        def update(self, instance: Loan, validated_data: dict) -> Loan:
+            for key, value in validated_data.items():
+                setattr(instance, key, value)
+
+            instance.save()
+
+            return instance

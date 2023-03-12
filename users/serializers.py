@@ -30,6 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "is_employee",
+            "is_blocked",
         ]
 
         extra_kwargs = {
