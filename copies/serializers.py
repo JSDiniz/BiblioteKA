@@ -19,6 +19,9 @@ class CopySerializer(serializers.ModelSerializer):
 
 class LoanSerializer(serializers.ModelSerializer):
     expires_at = serializers.SerializerMethodField()
+    borrower = serializers.SerializerMethodField()
+    book_name = serializers.SerializerMethodField()
+    
     user_blocked = serializers.SerializerMethodField()
     borrower = serializers.SerializerMethodField()
 
@@ -28,7 +31,15 @@ class LoanSerializer(serializers.ModelSerializer):
     def get_expires_at(self, obj: Loan):
         expiration = obj.lend_at + timedelta(days=7)
         return expiration
+        
+    def get_borrower(self, obj: Loan):
+        return obj.borrower.email
 
+    def get_book_name(self, obj: Loan):
+        if obj.book_copy:
+            return obj.book_copy.book.name
+        return None
+        
     def get_user_blocked(self, obj: Loan):
         if obj.refund_at > self.expires_at:
             return obj.borrower.is_blocked == True
@@ -41,6 +52,7 @@ class LoanSerializer(serializers.ModelSerializer):
             "refund_at",
             "expires_at",
             "book_copy",
+            "book_name",
             "borrower",
         ]
         read_only_fields = [
