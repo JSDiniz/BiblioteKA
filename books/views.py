@@ -25,7 +25,7 @@ class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BookSerializer
 
 
-class FollowView(generics.CreateAPIView):
+class FollowView(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
 
