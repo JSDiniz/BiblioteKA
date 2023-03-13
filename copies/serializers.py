@@ -21,16 +21,22 @@ class LoanSerializer(serializers.ModelSerializer):
     expires_at = serializers.SerializerMethodField()
     borrower = serializers.SerializerMethodField()
     book_name = serializers.SerializerMethodField()
-    
+
     borrower = serializers.SerializerMethodField()
 
-    def get_borrower(self, obj: Loan):
-        return obj.borrower.email
-
     def get_expires_at(self, obj: Loan):
-        expiration = obj.lend_at + timedelta(days=7)
+        expiration = obj.lend_at + timedelta(days=8)
+
+        if expiration.strftime("%a") == "Sun":
+            new_date1 = expiration + timedelta(days=1)
+            return new_date1
+
+        if expiration.strftime("%a") == "Sat":
+            new_date2 = expiration + timedelta(days=2)
+            return new_date2
+
         return expiration
-        
+
     def get_borrower(self, obj: Loan):
         return obj.borrower.email
 

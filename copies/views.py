@@ -7,13 +7,13 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from books.models import Book
 from books.serializers import BookSerializer
+from emailsSend.send import sendEmailCopyBook
 from users.models import User
 from users.permission import IsAdminOrOwner
 
 from .models import Copy, Loan
-from .serializers import CopySerializer, LoanSerializer
-from emailsSend.send import sendEmailCopyBook
 from .permissions import IsAdminOrLoanOwner
+from .serializers import CopySerializer, LoanSerializer
 
 
 class CopyView(generics.ListCreateAPIView):
@@ -74,7 +74,7 @@ class LoanView(generics.CreateAPIView):
                 {"message": "This user is blocked"}, status.HTTP_404_NOT_FOUND
             )
 
-        if not copy.is_available:
+        if not copy.is_avaliable:
             return Response(
                 {"message": "This book is not available"}, status.HTTP_404_NOT_FOUND
             )
@@ -84,7 +84,7 @@ class LoanView(generics.CreateAPIView):
 
         serializer.save(book_copy=copy, borrower=user)
 
-        copy.is_available = False
+        copy.is_avaliable = False
         copy.save()
         return Response(serializer.data, status.HTTP_201_CREATED)
 
@@ -99,11 +99,9 @@ class ListLoanView(generics.ListAPIView):
     def get_queryset(self):
         if self.request.user.is_employee:
             return Loan.objects.all()
-        
-        return Loan.objects.filter(
-            borrower=self.request.user
-        )
-    
+
+        return Loan.objects.filter(borrower=self.request.user)
+
 
 class LoanDetailView(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [JWTAuthentication]
@@ -118,5 +116,3 @@ class LoanDetailView(generics.RetrieveUpdateDestroyAPIView):
         copia = Copy.objects.get(id=copia)
         copia.is_avaliable = True
         copia.save()
-
-
