@@ -12,10 +12,12 @@ class UserSerializer(serializers.ModelSerializer):
         return User.objects.create_superuser(**validated_data)
 
     def update(self, instance: User, validated_data: dict) -> User:
+        if validated_data["password"]:
+            instance.set_password(validated_data.pop("password"))
+
         for key, value in validated_data.items():
             setattr(instance, key, value)
-
-        instance.set_password(instance.password)
+            
         instance.save()
 
         return instance
@@ -30,6 +32,7 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "is_employee",
+            "is_blocked",
         ]
 
         extra_kwargs = {

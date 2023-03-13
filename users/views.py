@@ -6,19 +6,16 @@ from .permission import IsAdminOrOwner
 from .serializers import UserSerializer
 
 
-class UserView(generics.ListCreateAPIView):
-
-    authentication_classes = [JWTAuthentication]
-    serializer_class = [IsAuthenticated, IsAdminOrOwner]
-    
+class UserView(generics.ListCreateAPIView):    
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [JWTAuthentication]
-    serializer_class = [IsAuthenticated, IsAdminOrOwner]
+    permission_classes = [IsAuthenticated, IsAdminOrOwner]
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    
     lookup_url_kwarg = "user_id"
