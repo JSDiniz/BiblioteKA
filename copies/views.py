@@ -12,6 +12,7 @@ from users.permission import IsAdminOrOwner
 
 from .models import Copy, Loan
 from .serializers import CopySerializer, LoanSerializer
+from emailsSend.send import sendEmailCopyBook
 from .permissions import IsAdminOrLoanOwner
 
 
@@ -31,6 +32,8 @@ class CopyView(generics.ListCreateAPIView):
             copies = Copy.objects.bulk_create(copies)
             found_book.refresh_from_db()
             serializer = BookSerializer(found_book)
+
+            sendEmailCopyBook(serializer.data)
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
