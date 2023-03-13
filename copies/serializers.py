@@ -13,7 +13,7 @@ class CopySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Copy
-        fields = ["id", "is_available", "book", "borrowers"]
+        fields = ["id", "is_avaliable", "book", "borrowers"]
         read_only_fields = ["id", "book", "borrowers"]
 
 
@@ -22,7 +22,6 @@ class LoanSerializer(serializers.ModelSerializer):
     borrower = serializers.SerializerMethodField()
     book_name = serializers.SerializerMethodField()
     
-    user_blocked = serializers.SerializerMethodField()
     borrower = serializers.SerializerMethodField()
 
     def get_borrower(self, obj: Loan):
@@ -39,10 +38,6 @@ class LoanSerializer(serializers.ModelSerializer):
         if obj.book_copy:
             return obj.book_copy.book.name
         return None
-        
-    def get_user_blocked(self, obj: Loan):
-        if obj.refund_at > self.expires_at:
-            return obj.borrower.is_blocked == True
 
     class Meta:
         model = Loan

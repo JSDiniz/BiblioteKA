@@ -118,10 +118,5 @@ class LoanDetailView(generics.RetrieveUpdateDestroyAPIView):
         copia = Copy.objects.get(id=copia)
         copia.is_avaliable = True
         copia.save()
-        
-class LoanDetailView(generics.RetrieveUpdateAPIView):
-    queryset = Loan
-    serializer_class = LoanSerializer
-    lookup_url_kwarg = "user_id"
 
 
