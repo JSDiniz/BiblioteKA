@@ -7,7 +7,7 @@ class Book(models.Model):
         ordering = ("name",)
 
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
-    name = models.CharField(max_length=80)
+    name = models.CharField(max_length=80, unique=True)
     description = models.CharField(max_length=120, blank=True)
     author = models.CharField(max_length=50)
     category = models.CharField(max_length=20)

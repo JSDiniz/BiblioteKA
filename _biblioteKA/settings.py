@@ -93,13 +93,17 @@ WSGI_APPLICATION = "_biblioteKA.wsgi.application"
 
 DATABASES = {
     "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    },
+    "postgres": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": os.getenv("POSTGRES_DB"),
         "USER": os.getenv("POSTGRES_USERNAME"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
         "HOST": os.getenv("HOST"),
         "PORT": os.getenv("PORT"),
-    }
+    },
 }
 
 
@@ -121,25 +125,25 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTHENTICATION_BACKENDS = [    'django.contrib.auth.backends.ModelBackend',]
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+]
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(hours=2),
-    'AUTHENTICATION_BACKENDS': ('path.to.EmailJWTAuthentication',),
+    "AUTHENTICATION_BACKENDS": ("path.to.EmailJWTAuthentication",),
 }
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    'AUTHENTICATION_BACKENDS': (
-        'path.to.EmailJWTAuthentication',
-    ),
+    "AUTHENTICATION_BACKENDS": ("path.to.EmailJWTAuthentication",),
 }
 SPECTACULAR_SETTINGS = {
-    "TITLE": "bandkamp",
-    "DESCRIPTION": "Your project description",
+    "TITLE": "BiblioteKA",
+    "DESCRIPTION": "Api para gerenciamento de biblioteka",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
