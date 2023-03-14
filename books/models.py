@@ -22,6 +22,8 @@ class Book(models.Model):
 
 
 class Follow(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    
     book = models.ForeignKey(
         "books.Book",
         on_delete=models.CASCADE,

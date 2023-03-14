@@ -18,9 +18,10 @@ class BookSerializer(serializers.ModelSerializer):
             "pages",
             "release_date",
             "copies",
+            "follows"
         ]
         read_only_fields = ["id", "copies"]
-
+        
         def create(self, validated_data):
             return Book.objects.create(**validated_data)
 
@@ -31,7 +32,7 @@ class BookSerializer(serializers.ModelSerializer):
 
             instance.save()
             return instance
-
+        
 class FollowSerializer(serializers.ModelSerializer):
     book = BookSerializer(read_only=True)
     user = UserSerializer(read_only=True)

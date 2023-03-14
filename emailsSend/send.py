@@ -6,7 +6,6 @@ from django.shortcuts import get_object_or_404
 from .messageEmail import copyInventory
 from .connectEmailSend import connectEmailSend
 
-import ipdb
 
 def sendEmailFollowBook(user, book):
     body = copyInventory(user, book)
