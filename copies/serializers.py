@@ -22,7 +22,6 @@ class LoanSerializer(serializers.ModelSerializer):
     borrower = serializers.SerializerMethodField()
     book_name = serializers.SerializerMethodField()
     
-    borrower = serializers.SerializerMethodField()
 
     def get_borrower(self, obj: Loan):
         return obj.borrower.email
