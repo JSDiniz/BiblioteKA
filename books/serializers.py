@@ -53,4 +53,13 @@ class FollowSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "date", "book", "user"]
 
     def create(self, validated_data):
-        return Follow.objects.create(**validated_data)
+
+        book = validated_data["book"]
+        user = validated_data["user"]
+
+        following = Follow.objects.filter(book_id=book.id, user_id=user.id).first()
+
+        if not following:
+            following = Follow.objects.create(**validated_data)
+        
+        return following
