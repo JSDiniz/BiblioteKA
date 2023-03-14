@@ -3,10 +3,9 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly, I
 from users.permission import IsAdminOrOwner, IsEmployeeOrReadOnly
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.shortcuts import get_object_or_404, get_list_or_404
-from rest_framework.views import Request, Response, status
 from .models import Book, Follow
 from .serializers import BookSerializer, FollowSerializer
-from emailsSend.send import sendEmailFollowBook
+
 
 class BookView(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
