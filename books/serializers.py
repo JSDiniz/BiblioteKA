@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 
 from books.models import Book, Follow
 from users.serializers import UserSerializer
@@ -20,10 +21,19 @@ class BookSerializer(serializers.ModelSerializer):
             "copies",
         ]
         read_only_fields = ["id", "copies"]
+        extra_kwargs = {
+            "name": {
+                "validators": [
+                    UniqueValidator(
+                        queryset=Book.objects.all(),
+                        message="This book already exists.",
+                    )
+                ]
+            },
+        }
 
         def create(self, validated_data):
             return Book.objects.create(**validated_data)
-
 
         def update(self, instance: Book, validated_data: dict) -> Book:
             for key, value in validated_data.items():
@@ -32,19 +42,15 @@ class BookSerializer(serializers.ModelSerializer):
             instance.save()
             return instance
 
+
 class FollowSerializer(serializers.ModelSerializer):
     book = BookSerializer(read_only=True)
     user = UserSerializer(read_only=True)
 
     class Meta:
         model = Follow
-        fields = [
-            "id",
-            "date",
-            "book",
-            "user"
-        ]
+        fields = ["id", "date", "book", "user"]
         read_only_fields = ["id", "date", "book", "user"]
 
-    def create(self, validated_data): 
+    def create(self, validated_data):
         return Follow.objects.create(**validated_data)

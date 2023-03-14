@@ -16,7 +16,7 @@ from .permissions import IsAdminOrLoanOwner
 from .serializers import CopySerializer, LoanSerializer
 
 
-class CopyView(generics.ListCreateAPIView):
+class CopyView(generics.CreateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAdminUser]
 

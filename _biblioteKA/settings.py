@@ -107,7 +107,7 @@ DATABASES = {
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
         "HOST": os.getenv("HOST"),
         "PORT": os.getenv("PORT"),
-    }
+    },
 }
 
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -140,25 +140,25 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTHENTICATION_BACKENDS = [    'django.contrib.auth.backends.ModelBackend',]
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+]
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(hours=2),
-    'AUTHENTICATION_BACKENDS': ('path.to.EmailJWTAuthentication',),
+    "AUTHENTICATION_BACKENDS": ("path.to.EmailJWTAuthentication",),
 }
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    'AUTHENTICATION_BACKENDS': (
-        'path.to.EmailJWTAuthentication',
-    ),
+    "AUTHENTICATION_BACKENDS": ("path.to.EmailJWTAuthentication",),
 }
 SPECTACULAR_SETTINGS = {
-    "TITLE": "bandkamp",
-    "DESCRIPTION": "Your project description",
+    "TITLE": "BiblioteKA",
+    "DESCRIPTION": "Api para gerenciamento de biblioteka",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
