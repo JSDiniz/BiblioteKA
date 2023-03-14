@@ -33,8 +33,6 @@ class CopyView(generics.CreateAPIView):
             found_book.refresh_from_db()
             serializer = BookSerializer(found_book)
 
-            sendEmailCopyBook(serializer.data)
-
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(
@@ -50,12 +48,13 @@ class ListCopiesView(generics.ListAPIView):
     serializer_class = CopySerializer
 
 
-class CopyDetailView(generics.RetrieveUpdateDestroyAPIView):
+class CopyDetailView(generics.DestroyAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAdminUser]
 
     queryset = Copy.objects.all()
     serializer_class = CopySerializer
+    lookup_url_kwarg = "copy_id"
 
 
 class LoanView(generics.CreateAPIView):
