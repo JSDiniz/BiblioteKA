@@ -1,15 +1,6 @@
 from rest_framework import generics
-<<<<<<< HEAD
-<<<<<<< HEAD
 from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly, IsAuthenticated
-=======
-import ipdb
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
->>>>>>> refactor/books_views
-=======
-import ipdb
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
->>>>>>> feat/loan_copy
 from users.permission import IsAdminOrOwner, IsEmployeeOrReadOnly
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.shortcuts import get_object_or_404, get_list_or_404
