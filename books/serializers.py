@@ -20,6 +20,7 @@ class BookSerializer(serializers.ModelSerializer):
             "pages",
             "release_date",
             "copies",
+            "follows"
         ]
         read_only_fields = ["id", "copies"]
         extra_kwargs = {

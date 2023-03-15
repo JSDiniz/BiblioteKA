@@ -1,13 +1,14 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
-from rest_framework.views import APIView, Request, Response, status
+from rest_framework.views import  Request, Response, status
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from books.models import Book
-from books.serializers import BookSerializer
 from users.models import User
 from users.permission import IsAdminOrOwner
+from books.serializers import BookSerializer
+
 from .models import Copy, Loan
 from .permissions import IsAdminOrLoanOwner
 from .serializers import CopySerializer, LoanSerializer
@@ -20,6 +21,7 @@ class CopyView(generics.CreateAPIView):
 
     queryset = Copy.objects.all()
     serializer_class = CopySerializer
+    
 
     def create(self, request, *args, **kwargs):
         found_book = get_object_or_404(Book, id=self.kwargs.get("pk"))
@@ -34,7 +36,7 @@ class CopyView(generics.CreateAPIView):
             email = threading.Thread(target=sendEmailCopyBookUser, args=(serializer.data, 5))
             email.start()
 
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response({"num_copies": len(copies)}, status=status.HTTP_201_CREATED)
 
         return Response(
             {"datail": "quantity field is missing"}, status=status.HTTP_400_BAD_REQUEST
@@ -81,7 +83,6 @@ class LoanView(generics.CreateAPIView):
 
         serializer = LoanSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
         serializer.save(book_copy=copy, borrower=user)
 
         copy.is_avaliable = False

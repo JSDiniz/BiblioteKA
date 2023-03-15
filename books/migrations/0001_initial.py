@@ -40,10 +40,14 @@ class Migration(migrations.Migration):
                 (
                     "id",
                     models.UUIDField(
+<<<<<<< HEAD
                         default=uuid.uuid4,
                         editable=False,
                         primary_key=True,
                         serialize=False,
+=======
+                        default=uuid.uuid4, primary_key=True, serialize=False
+>>>>>>> refactor/books_views
                     ),
                 ),
                 ("date", models.DateTimeField(auto_now_add=True)),
