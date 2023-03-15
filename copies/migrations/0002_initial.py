@@ -12,6 +12,9 @@ class Migration(migrations.Migration):
         ("copies", "0001_initial"),
         ("books", "0002_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ("copies", "0001_initial"),
+        ("books", "0002_initial"),
     ]
 
     operations = [

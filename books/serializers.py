@@ -3,7 +3,8 @@ from rest_framework.validators import UniqueValidator
 
 from books.models import Book, Follow
 from users.serializers import UserSerializer
-
+from taskScheduling.send import sendEmailFollowBookUser
+import threading
 
 class BookSerializer(serializers.ModelSerializer):
     copies = serializers.IntegerField(source="copies.count", read_only=True)
@@ -19,6 +20,7 @@ class BookSerializer(serializers.ModelSerializer):
             "pages",
             "release_date",
             "copies",
+            "follows"
         ]
         read_only_fields = ["id", "copies"]
         extra_kwargs = {
@@ -61,5 +63,7 @@ class FollowSerializer(serializers.ModelSerializer):
 
         if not following:
             following = Follow.objects.create(**validated_data)
+            email = threading.Thread(target=sendEmailFollowBookUser, args=(validated_data, 5))
+            email.start()
         
         return following
