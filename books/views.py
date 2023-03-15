@@ -63,7 +63,7 @@ class FollowView(generics.ListCreateAPIView):
         primary_key = self.kwargs['book_id']
         book = get_object_or_404(Book, pk=primary_key)
 
-        sendEmailFollowBook(user=self.request.user, book=book)
+        # sendEmailFollowBook(user=self.request.user, book=book)
         
         return serializer.save(user=self.request.user, book=book)
 
