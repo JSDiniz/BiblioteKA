@@ -1,5 +1,6 @@
 
 from books.models import Book, Follow
+from copies.models import Copy
 from users.models import User
 from django.shortcuts import get_object_or_404
 
@@ -13,8 +14,8 @@ def sendEmailFollowBook(user, book):
     return connectEmailSend(user, body)
 
 
-def  sendEmailCopyBook(data):
-    follow = Follow.objects.filter(book_id=data["id"])
+def  sendEmailCopyBook(book_id):
+    follow = Follow.objects.filter(book_id=book_id)
 
     for user_book in follow:
         book = get_object_or_404(Book, pk=user_book.book.id)
@@ -29,5 +30,25 @@ def sendEmailFollowBookUser(data, tempo):
 
 
 def sendEmailCopyBookUser(data, tempo):
-    time.sleep(tempo)
-    sendEmailCopyBook(data)
+    copy = Copy.objects.filter(book_id=data, is_avaliable=True)
+
+    if copy.count() <= 1:
+        time.sleep(tempo)
+        sendEmailCopyBook(data)
+
+
+def sendEmailBookLoan(book_copy, tempo):
+    copy = Copy.objects.filter(id=book_copy).first()
+    book = Copy.objects.filter(book_id=copy.book_id, is_avaliable=True)
+
+    if book.count() <= 1:
+        time.sleep(tempo)
+        sendEmailCopyBook(copy.book_id)
+
+
+def bookReturn(data, tempo):
+    copy = Copy.objects.filter(book_id=data.book_id, is_avaliable=True)
+
+    if copy.count() <= 1:
+        time.sleep(tempo)
+        sendEmailCopyBook(data.book_id)
