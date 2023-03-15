@@ -73,3 +73,4 @@ class LoanSerializer(serializers.ModelSerializer):
             instance.save()
 
             return instance
+            

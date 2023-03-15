@@ -44,7 +44,9 @@ if RAILWAY_STATIC_URL:
 
 THIRD_PARTY_APPS = [
     "rest_framework",
+    "django_celery_beat",
     "drf_spectacular",
+
 ]
 
 MY_APPS = [
@@ -156,6 +158,14 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "AUTHENTICATION_BACKENDS": ("path.to.EmailJWTAuthentication",),
 }
+
+CELERY_BEAT_SCHEDULE = {
+    'unblock-users-every-hour': {
+        'task': 'tasks.unblock_users',
+        'schedule': timedelta(hours=1),
+    },
+}
+
 SPECTACULAR_SETTINGS = {
     "TITLE": "BiblioteKA",
     "DESCRIPTION": "Api para gerenciamento de biblioteka",
