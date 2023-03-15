@@ -1,5 +1,6 @@
 import ipdb
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework import generics
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.views import  Request, Response, status
@@ -21,7 +22,7 @@ class CopyView(generics.ListCreateAPIView):
 
     queryset = Copy.objects.all()
     serializer_class = CopySerializer
-    
+
 
     def create(self, request, *args, **kwargs):
         found_book = get_object_or_404(Book, id=self.kwargs.get("pk"))
@@ -35,7 +36,9 @@ class CopyView(generics.ListCreateAPIView):
 
             sendEmailCopyBook(serializer.data)
 
-            return Response({"num_copies": len(copies)}, status=status.HTTP_201_CREATED)
+            new_copies = Copy.objects.filter(id__in=[copy.id for copy in copies])
+            new_copies_serializer = CopySerializer(new_copies, many=True)
+            return Response(new_copies_serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(
             {"datail": "quantity field is missing"}, status=status.HTTP_400_BAD_REQUEST
@@ -74,7 +77,7 @@ class LoanView(generics.CreateAPIView):
                 {"message": "This user is blocked"}, status.HTTP_404_NOT_FOUND
             )
 
-        if not copy.is_available:
+        if not copy.is_avaliable:
             return Response(
                 {"message": "This book is not available"}, status.HTTP_404_NOT_FOUND
             )
@@ -83,7 +86,7 @@ class LoanView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save(book_copy=copy, borrower=user)
 
-        copy.is_available = False
+        copy.is_avaliable = False
         copy.save()
         return Response(serializer.data, status.HTTP_201_CREATED)
 
@@ -104,6 +107,7 @@ class ListLoanView(generics.ListAPIView):
         )
     
 
+
 class LoanDetailView(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated, IsAdminOrLoanOwner]
@@ -113,9 +117,18 @@ class LoanDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def perform_update(self, serializer):
         serializer.save()
-        copia = serializer.data["book_copy"]
-        copia = Copy.objects.get(id=copia)
-        copia.is_avaliable = True
-        copia.save()
+        # ipdb.set_trace()
+        expires = LoanSerializer(serializer.instance)
+        loan = serializer.instance
+        copy = loan.book_copy
+        user = loan.borrower
+        
+        if not copy.is_avaliable and loan.refund_at > expires.data["expires_at"]:
+            print('maior')
+            user.is_blocked = True
+            user.save()
 
+        copy.is_available = True
+        copy.save()
+        copy.borrowers.remove(user)
 
