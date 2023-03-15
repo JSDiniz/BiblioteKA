@@ -6,7 +6,7 @@ from .models import User
 
 class IsAdminOrOwner(permissions.BasePermission):
     def has_object_permission(self, request, view: View, obj: User) -> bool:
-        return request.user.is_employee or request.user == obj.id
+        return request.user.is_employee or request.user == obj
 
 
 class IsEmployeeOrReadOnly(permissions.BasePermission):
