@@ -1,4 +1,3 @@
-import ipdb
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
@@ -7,14 +6,13 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from books.models import Book
 from books.serializers import BookSerializer
-from emailsSend.send import sendEmailCopyBook
 from users.models import User
 from users.permission import IsAdminOrOwner
-
 from .models import Copy, Loan
 from .permissions import IsAdminOrLoanOwner
 from .serializers import CopySerializer, LoanSerializer
-
+from taskScheduling.send import sendEmailCopyBookUser
+import threading
 
 class CopyView(generics.CreateAPIView):
     authentication_classes = [JWTAuthentication]
@@ -32,6 +30,9 @@ class CopyView(generics.CreateAPIView):
             copies = Copy.objects.bulk_create(copies)
             found_book.refresh_from_db()
             serializer = BookSerializer(found_book)
+
+            email = threading.Thread(target=sendEmailCopyBookUser, args=(serializer.data, 5))
+            email.start()
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
