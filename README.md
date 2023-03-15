@@ -6,7 +6,7 @@
 
 ## Tabela de Conteúdos
 
-- [Visão Geral](#2-visão-geral)
+- [Visão Geral](#1-visão-geral)
 - [Diagrama ER](#2-diagrama-er)
 - [Início Rápido](#3-início-rápido)
   - [Instalando Dependências](#31-instalando-dependências)
