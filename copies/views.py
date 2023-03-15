@@ -15,7 +15,7 @@ from .models import Copy, Loan
 from .permissions import IsAdminOrLoanOwner
 
 from .serializers import CopySerializer, LoanSerializer
-from taskScheduling.send import sendEmailCopyBookUser
+from taskScheduling.send import sendEmailCopyBookUser, sendEmailBookLoan, bookReturn
 import threading
 
 class CopyView(generics.CreateAPIView):
@@ -39,7 +39,7 @@ class CopyView(generics.CreateAPIView):
             serializer = BookSerializer(found_book)
 
 
-            email = threading.Thread(target=sendEmailCopyBookUser, args=(serializer.data, 5))
+            email = threading.Thread(target=sendEmailCopyBookUser, args=(serializer.data["id"], 5))
             email.start()
 
             new_copies = Copy.objects.filter(id__in=[copy.id for copy in copies])
@@ -95,6 +95,10 @@ class LoanView(generics.CreateAPIView):
 
         copy.is_avaliable = False
         copy.save()
+
+        email = threading.Thread(target=sendEmailBookLoan, args=(serializer.data["book_copy"], 5))
+        email.start()
+
         return Response(serializer.data, status.HTTP_201_CREATED)
 
 
@@ -138,4 +142,7 @@ class LoanDetailView(generics.RetrieveUpdateDestroyAPIView):
 
         copy.is_avaliable = True
         copy.save()
+        
+        email = threading.Thread(target=bookReturn, args=(copy, 5))
+        email.start()
 
