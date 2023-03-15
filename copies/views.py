@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework import generics
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.views import  Request, Response, status
@@ -23,6 +24,7 @@ class CopyView(generics.CreateAPIView):
     serializer_class = CopySerializer
     
 
+
     def create(self, request, *args, **kwargs):
         found_book = get_object_or_404(Book, id=self.kwargs.get("pk"))
         quantity = self.request.data.get("quantity", None)
@@ -36,7 +38,9 @@ class CopyView(generics.CreateAPIView):
             email = threading.Thread(target=sendEmailCopyBookUser, args=(serializer.data, 5))
             email.start()
 
-            return Response({"num_copies": len(copies)}, status=status.HTTP_201_CREATED)
+            new_copies = Copy.objects.filter(id__in=[copy.id for copy in copies])
+            new_copies_serializer = CopySerializer(new_copies, many=True)
+            return Response(new_copies_serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(
             {"datail": "quantity field is missing"}, status=status.HTTP_400_BAD_REQUEST
@@ -104,6 +108,7 @@ class ListLoanView(generics.ListAPIView):
         return Loan.objects.filter(borrower=self.request.user)
 
 
+
 class LoanDetailView(generics.RetrieveUpdateDestroyAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated, IsAdminOrLoanOwner]
@@ -113,7 +118,18 @@ class LoanDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def perform_update(self, serializer):
         serializer.save()
-        copia = serializer.data["book_copy"]
-        copia = Copy.objects.get(id=copia)
-        copia.is_avaliable = True
-        copia.save()
+        # ipdb.set_trace()
+        expires = LoanSerializer(serializer.instance)
+        loan = serializer.instance
+        copy = loan.book_copy
+        user = loan.borrower
+        
+        if not copy.is_avaliable and loan.refund_at > expires.data["expires_at"]:
+            print('maior')
+            user.is_blocked = True
+            user.save()
+
+        copy.is_available = True
+        copy.save()
+        copy.borrowers.remove(user)
+
