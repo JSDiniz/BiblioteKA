@@ -26,7 +26,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("users.urls")),
     path("api/", include("books.urls")),
-    path("api/", include("copies.urls")), path('api/docs/', SpectacularAPIView.as_view(), name='schema'),
+    path("api/", include("copies.urls")), 
+    path('api/docs/', SpectacularAPIView.as_view(), name='schema'),
     # Opcionais (escolha 1)
     path('api/docs/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/docs/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),

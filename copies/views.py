@@ -35,6 +35,7 @@ class CopyView(generics.CreateAPIView):
             found_book.refresh_from_db()
             serializer = BookSerializer(found_book)
 
+
             email = threading.Thread(target=sendEmailCopyBookUser, args=(serializer.data, 5))
             email.start()
 
