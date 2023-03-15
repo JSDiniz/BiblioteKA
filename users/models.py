@@ -25,7 +25,9 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=20)
     is_employee = models.BooleanField(default=False, null=True)
     is_blocked = models.BooleanField(default=False, null=True)
+    blocked_until = models.DateField(null=True)
 
+    
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     objects = CustomUserManager()

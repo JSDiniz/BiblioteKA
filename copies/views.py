@@ -1,6 +1,7 @@
 import ipdb
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from datetime import timedelta
 from rest_framework import generics
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.views import  Request, Response, status
@@ -14,7 +15,7 @@ from .models import Copy, Loan
 from .serializers import CopySerializer, LoanSerializer
 from emailsSend.send import sendEmailCopyBook
 from .permissions import IsAdminOrLoanOwner
-
+from django.db import connection
 
 class CopyView(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
@@ -117,18 +118,20 @@ class LoanDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def perform_update(self, serializer):
         serializer.save()
-        # ipdb.set_trace()
-        expires = LoanSerializer(serializer.instance)
+
+        
         loan = serializer.instance
         copy = loan.book_copy
         user = loan.borrower
         
-        if not copy.is_avaliable and loan.refund_at > expires.data["expires_at"]:
-            print('maior')
+        if not copy.is_avaliable and loan.refund_at > serializer.data["expires_at"]:
+            now = timezone.now()
+            blocked_until = now + timedelta(days=3)
+
             user.is_blocked = True
+            user.blocked_until = blocked_until
             user.save()
 
-        copy.is_available = True
+        copy.is_avaliable = True
         copy.save()
-        copy.borrowers.remove(user)
 

@@ -37,7 +37,9 @@ ALLOWED_HOSTS = []
 
 THIRD_PARTY_APPS = [
     "rest_framework",
+    "django_celery_beat",
     "drf_spectacular",
+
 ]
 
 MY_APPS = [
@@ -137,6 +139,14 @@ REST_FRAMEWORK = {
         'path.to.EmailJWTAuthentication',
     ),
 }
+
+CELERY_BEAT_SCHEDULE = {
+    'unblock-users-every-hour': {
+        'task': 'tasks.unblock_users',
+        'schedule': timedelta(hours=1),
+    },
+}
+
 SPECTACULAR_SETTINGS = {
     "TITLE": "bandkamp",
     "DESCRIPTION": "Your project description",
