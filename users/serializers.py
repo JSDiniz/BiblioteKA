@@ -1,10 +1,13 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-
+from django.utils import timezone
+from datetime import timedelta 
 from .models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
+    
+
     def create(self, validated_data):
         if validated_data["is_employee"] == False:
             return User.objects.create_user(**validated_data)
@@ -17,10 +20,13 @@ class UserSerializer(serializers.ModelSerializer):
 
         for key, value in validated_data.items():
             setattr(instance, key, value)
+
         instance.set_password(instance.password)
+
         instance.save()
 
         return instance
+
 
     class Meta:
         model = User
@@ -33,6 +39,7 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name",
             "is_employee",
             "is_blocked",
+            "blocked_until",
         ]
 
         extra_kwargs = {
@@ -53,4 +60,5 @@ class UserSerializer(serializers.ModelSerializer):
                     )
                 ]
             },
+            
         }

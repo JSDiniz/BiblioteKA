@@ -30,6 +30,6 @@ class Loan(models.Model):
 
     borrower = models.ForeignKey(
         "users.User",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name="user_loans",
     )
