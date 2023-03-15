@@ -1,4 +1,3 @@
-import ipdb
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from datetime import timedelta
@@ -9,20 +8,24 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from books.models import Book
 from users.models import User
+from users.permission import IsAdminOrOwner
 from books.serializers import BookSerializer
 
 from .models import Copy, Loan
-from .serializers import CopySerializer, LoanSerializer
-from emailsSend.send import sendEmailCopyBook
 from .permissions import IsAdminOrLoanOwner
-from django.db import connection
 
-class CopyView(generics.ListCreateAPIView):
+from .serializers import CopySerializer, LoanSerializer
+from taskScheduling.send import sendEmailCopyBookUser
+import threading
+
+class CopyView(generics.CreateAPIView):
+
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAdminUser]
 
     queryset = Copy.objects.all()
     serializer_class = CopySerializer
+    
 
 
     def create(self, request, *args, **kwargs):
@@ -35,7 +38,9 @@ class CopyView(generics.ListCreateAPIView):
             found_book.refresh_from_db()
             serializer = BookSerializer(found_book)
 
-            sendEmailCopyBook(serializer.data)
+
+            email = threading.Thread(target=sendEmailCopyBookUser, args=(serializer.data, 5))
+            email.start()
 
             new_copies = Copy.objects.filter(id__in=[copy.id for copy in copies])
             new_copies_serializer = CopySerializer(new_copies, many=True)
@@ -54,12 +59,13 @@ class ListCopiesView(generics.ListAPIView):
     serializer_class = CopySerializer
 
 
-class CopyDetailView(generics.RetrieveUpdateDestroyAPIView):
+class CopyDetailView(generics.DestroyAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAdminUser]
 
     queryset = Copy.objects.all()
     serializer_class = CopySerializer
+    lookup_url_kwarg = "copy_id"
 
 
 class LoanView(generics.CreateAPIView):
@@ -102,11 +108,9 @@ class ListLoanView(generics.ListAPIView):
     def get_queryset(self):
         if self.request.user.is_employee:
             return Loan.objects.all()
-        
-        return Loan.objects.filter(
-            borrower=self.request.user
-        )
-    
+
+        return Loan.objects.filter(borrower=self.request.user)
+
 
 
 class LoanDetailView(generics.RetrieveUpdateDestroyAPIView):

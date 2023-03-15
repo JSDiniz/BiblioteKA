@@ -1,13 +1,13 @@
 from rest_framework import generics
-import ipdb
+from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from users.permission import IsAdminOrOwner, IsEmployeeOrReadOnly
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.shortcuts import get_object_or_404, get_list_or_404
-from rest_framework.views import Request, Response, status
 from .models import Book, Follow
 from .serializers import BookSerializer, FollowSerializer
-from emailsSend.send import sendEmailFollowBook
+from rest_framework.views import  Request, Response, status
+
 
 class BookView(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
@@ -28,7 +28,7 @@ class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class FollowView(generics.ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated, IsAdminOrOwner]
 
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
@@ -70,7 +70,7 @@ class FollowView(generics.ListCreateAPIView):
 
 class FollowDetailView(generics.RetrieveDestroyAPIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated, IsAdminOrOwner]
     
     queryset = Book.objects.all()
     serializer_class = BookSerializer
